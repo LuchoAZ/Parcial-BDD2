@@ -1,9 +1,13 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/parcial_ecommerce';
-mongoose.set('strictQuery', true);
-mongoose.connect(uri).then(()=>{
-  console.log('✅ Conectado a MongoDB');
-}).catch(err=>{
-  console.error('❌ Error conectando a MongoDB', err);
-});
+export const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      dbName: process.env.MONGODB_NAME,
+    });
+    console.log("✅ Conectado a MongoDB");
+  } catch (error) {
+    console.error("Error al conectar a MongoDB:", error.message);
+    process.exit(1); // Corta el proceso si no hay conexión
+  }
+};
