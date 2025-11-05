@@ -1,2 +1,21 @@
-/node_modules
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Node
+node_modules
+dist
+coverage
+
+# Env
 .env
+
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,366 @@
+{
+  "info": {
+    "name": "Parcial-BDD2 (Persona 2)",
+    "_postman_id": "b1a8c11e-4e4f-4b5f-8d8f-1762313517.687282",
+    "description": "Colección de endpoints para probar la API del parcial (controladores + rutas).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://localhost:3000/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"admin@local\", \"password\": \"1234\"}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categorias",
+      "item": [
+        {
+          "name": "GET /api/categorias",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/categorias"
+          }
+        },
+        {
+          "name": "POST /api/categorias (admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://localhost:3000/api/categorias",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Perif\\u00e9ricos\"}"
+            }
+          }
+        },
+        {
+          "name": "GET /api/categorias/stats",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/categorias/stats"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "GET /api/productos",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/productos"
+          }
+        },
+        {
+          "name": "GET /api/productos/filtro?min=0&max=10000&marca=ACME",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/productos/filtro?min=0&max=10000&marca=ACME"
+          }
+        },
+        {
+          "name": "GET /api/productos/top",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/productos/top"
+          }
+        },
+        {
+          "name": "PATCH /api/productos/:id/stock (admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://localhost:3000/api/productos/{{productId}}/stock",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"stock\": 25}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "GET /api/usuarios (admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/usuarios"
+          }
+        },
+        {
+          "name": "GET /api/usuarios/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/usuarios/{{userId}}"
+          }
+        },
+        {
+          "name": "DELETE /api/usuarios/:id (admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/usuarios/{{userId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Carrito",
+      "item": [
+        {
+          "name": "GET /api/carrito/:usuarioId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/carrito/{{userId}}"
+          }
+        },
+        {
+          "name": "GET /api/carrito/:usuarioId/total",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/carrito/{{userId}}/total"
+          }
+        },
+        {
+          "name": "POST /api/carrito/:usuarioId/add",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://localhost:3000/api/carrito/{{userId}}/add",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"productId\": \"{{productId}}\", \"quantity\": 2}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Órdenes",
+      "item": [
+        {
+          "name": "POST /api/ordenes",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://localhost:3000/api/ordenes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"paymentMethod\": \"efectivo\"}"
+            }
+          }
+        },
+        {
+          "name": "GET /api/ordenes (admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/ordenes"
+          }
+        },
+        {
+          "name": "GET /api/ordenes/stats (admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/ordenes/stats"
+          }
+        },
+        {
+          "name": "GET /api/ordenes/user/:userId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/ordenes/user/{{userId}}"
+          }
+        },
+        {
+          "name": "PATCH /api/ordenes/:id/status (admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://localhost:3000/api/ordenes/{{orderId}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"status\": \"enviado\"}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reseñas",
+      "item": [
+        {
+          "name": "GET /api/resenas",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/resenas"
+          }
+        },
+        {
+          "name": "GET /api/resenas/product/:productId",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/resenas/product/{{productId}}"
+          }
+        },
+        {
+          "name": "GET /api/resenas/top",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/resenas/top"
+          }
+        },
+        {
+          "name": "POST /api/resenas",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://localhost:3000/api/resenas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"product\": \"{{productId}}\", \"rating\": 5, \"comment\": \"Excelente\"}"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "productId",
+      "value": ""
+    },
+    {
+      "key": "orderId",
+      "value": ""
+    }
+  ]
+}
