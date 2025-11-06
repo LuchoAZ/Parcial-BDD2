@@ -1,13 +1,14 @@
 import { Router } from "express";
-import { requireAuth, requireRole } from "../middlewares/auth.js";
-import { crearOrden, listarOrdenes, ordenesPorUsuario, statsOrdenes, actualizarEstadoOrden } from "../controllers/ordenes.controller.js";
+import { requireAuth, isAdmin, isOwnerOrAdmin } from "../middlewares/auth.js";
+import { crearOrden, listarOrdenes, ordenesPorUsuario, statsOrdenes, actualizarEstadoOrden, eliminarOrden } from "../controllers/ordenes.controller.js";
 
-const router = Router();
+const OrdenesRouter = Router();
 
-router.post("/", requireAuth, crearOrden);
-router.get("/", requireAuth, requireRole("admin"), listarOrdenes);
-router.get("/stats", requireAuth, requireRole("admin"), statsOrdenes);
-router.get("/user/:userId", requireAuth, ordenesPorUsuario);
-router.patch("/:id/status", requireAuth, requireRole("admin"), actualizarEstadoOrden);
+OrdenesRouter.post("/", requireAuth, crearOrden);
+OrdenesRouter.get("/", requireAuth, isAdmin, listarOrdenes);
+OrdenesRouter.get("/stats", requireAuth, isAdmin, statsOrdenes);
+OrdenesRouter.get("/user/:usuarioId", requireAuth, isOwnerOrAdmin, ordenesPorUsuario);
+OrdenesRouter.delete("/:orderId", requireAuth, eliminarOrden);
+OrdenesRouter.patch("/:orderId/status", requireAuth, isAdmin, actualizarEstadoOrden);
 
-export default router;
+export default OrdenesRouter;

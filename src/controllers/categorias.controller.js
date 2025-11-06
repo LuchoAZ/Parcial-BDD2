@@ -40,6 +40,14 @@ export const actualizarCategoria = async (req, res, next) => {
 export const eliminarCategoria = async (req, res, next) => {
   try {
     const { id } = req.params;
+    let foundProducts = await Product.find({ category: id });
+    console.log(foundProducts.length);
+    if (foundProducts.length) {
+      res.json({
+        success: false,
+        message: "Categoría presente en productos, no puede ser eliminada",
+      });
+    }
     await Category.findByIdAndDelete(id);
     res.json({ success: true, message: "Categoría eliminada" });
   } catch (err) {
@@ -54,7 +62,7 @@ export const statsCategorias = async (req, res, next) => {
       { $group: { _id: "$category", cantidad: { $sum: 1 } } },
       {
         $lookup: {
-          from: "categories", // 🔥 nombre real de la colección en inglés
+          from: "categories",
           localField: "_id",
           foreignField: "_id",
           as: "categoria",

@@ -1,12 +1,13 @@
 import { Router } from "express";
-import { requireAuth, requireRole } from "../middlewares/auth.js";
-import { listarUsuarios, detalleUsuario, crearUsuario, eliminarUsuario } from "../controllers/usuarios.controller.js";
+import { isAdmin, isOwnerOrAdmin, requireAuth } from "../middlewares/auth.js";
+import { listarUsuarios, detalleUsuario, eliminarUsuario, crearCliente, crearAdmin } from "../controllers/usuarios.controller.js";
 
-const router = Router();
+const UsuariosRouter = Router();
 
-router.get("/", requireAuth, requireRole("admin"), listarUsuarios);
-router.get("/:id", requireAuth, detalleUsuario);
-router.post("/", crearUsuario);
-router.delete("/:id", requireAuth, requireRole("admin"), eliminarUsuario);
+UsuariosRouter.get("/", requireAuth, isAdmin, listarUsuarios);
+UsuariosRouter.get("/:usuarioId", requireAuth,isOwnerOrAdmin, detalleUsuario);
+UsuariosRouter.delete("/:usuarioId", requireAuth, isAdmin, eliminarUsuario);
 
-export default router;
+UsuariosRouter.post("/register", crearCliente);
+UsuariosRouter.post("/admin", requireAuth, isAdmin, crearAdmin );
+export default UsuariosRouter;

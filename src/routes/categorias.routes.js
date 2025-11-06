@@ -1,13 +1,13 @@
 import { Router } from "express";
-import { requireAuth, requireRole } from "../middlewares/auth.js";
+import { requireAuth, isAdmin } from "../middlewares/auth.js";
 import { listarCategorias, crearCategoria, actualizarCategoria, eliminarCategoria, statsCategorias } from "../controllers/categorias.controller.js";
 
-const router = Router();
+const CategoriasRouter = Router();
 
-router.get("/", listarCategorias);
-router.post("/", requireAuth, requireRole("admin"), crearCategoria);
-router.put("/:id", requireAuth, requireRole("admin"), actualizarCategoria);
-router.delete("/:id", requireAuth, requireRole("admin"), eliminarCategoria);
-router.get("/stats", statsCategorias);
+CategoriasRouter.get("/", listarCategorias);
+CategoriasRouter.post("/", requireAuth, isAdmin, crearCategoria);
+CategoriasRouter.put("/:id", requireAuth, isAdmin, actualizarCategoria);
+CategoriasRouter.delete("/:id", requireAuth, isAdmin, eliminarCategoria);
+CategoriasRouter.get("/stats", statsCategorias);
 
-export default router;
+export default CategoriasRouter;

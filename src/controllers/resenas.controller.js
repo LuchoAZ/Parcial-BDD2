@@ -8,7 +8,7 @@ export const listarResenas = async (req, res, next) => {
     const list = await Review.aggregate([
       {
         $lookup: {
-          from: "users", // ✅ colección en inglés
+          from: "users",
           localField: "user",
           foreignField: "_id",
           as: "usuario",
@@ -16,7 +16,7 @@ export const listarResenas = async (req, res, next) => {
       },
       {
         $lookup: {
-          from: "products", // ✅ colección en inglés
+          from: "products",
           localField: "product",
           foreignField: "_id",
           as: "producto",
@@ -45,7 +45,10 @@ export const listarResenas = async (req, res, next) => {
 export const resenasPorProducto = async (req, res, next) => {
   try {
     const { productId } = req.params;
-    const list = await Review.find({ product: productId }).populate("user", "name");
+    const list = await Review.find({ product: productId }).populate(
+      "user",
+      "name"
+    );
     res.json({ success: true, data: list });
   } catch (err) {
     next(err);
@@ -65,7 +68,7 @@ export const topResenas = async (req, res, next) => {
       },
       {
         $lookup: {
-          from: "products", // ✅ colección correcta
+          from: "products",
           localField: "_id",
           foreignField: "_id",
           as: "producto",
@@ -99,12 +102,17 @@ export const crearResena = async (req, res, next) => {
       "items.product": product,
     });
     if (!bought)
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: "Solo se puede reseñar productos comprados",
-        });
+      return res.status(400).json({
+        success: false,
+        error: "Solo se puede reseñar productos comprados",
+      });
+    const alreadyExisting = await Review.findOne({ product, user: req.user.id });
+    if (alreadyExisting) {
+       return res.status(400).json({
+        success: false,
+        error: "Solo se puede crear una reseña por producto",
+      });
+    }
 
     // Crea la reseña
     const review = await Review.create({
@@ -115,8 +123,34 @@ export const crearResena = async (req, res, next) => {
     });
 
     // Incrementa el contador de reseñas en el producto
-    await Product.findByIdAndUpdate(product, { $inc: { reviewsCount: 1 } });
+    let reviewsCount = (await Review.find({product: review.product})).length
+    await Product.findByIdAndUpdate(review.product, { reviewsCount });
+    res.status(201).json({ success: true, data: review });
+  } catch (err) {
+    next(err);
+  }
+};
 
+export const eliminarResena = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    let review = await Review.findById(id);
+
+    if (!review) {
+      return res.status(404).json({
+        success: false,
+        error: "Reseña no encontrada.",
+      });
+    }
+
+    if (!isOwnerOrAdminHelper(req.user,review.user))
+      return res.status(400).json({
+        success: false,
+        error: "Solo se puede eliminar las reseñas propias.",
+      });
+    await Review.findByIdAndDelete(id);
+    let reviewsCount = (await Review.find({product: review.product})).length
+    await Product.findByIdAndUpdate(review.product, { reviewsCount });
     res.status(201).json({ success: true, data: review });
   } catch (err) {
     next(err);

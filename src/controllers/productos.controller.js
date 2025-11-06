@@ -1,24 +1,28 @@
 import Product from "../models/Product.js";
+import Review from "../models/Review.js";
 
 // Listar todos los productos
 export const listarProductos = async (req, res, next) => {
   try {
-    const lista = await Product.find().populate("category", "name description");
+    const lista = await Product.find({active:true}).populate("category", "name description");
     res.json({ success: true, data: lista });
   } catch (err) {
     next(err);
   }
 };
 
-// Filtro de productos por precio y marca
+// Filtro de productos por precio y nombre
 export const filtroProductos = async (req, res, next) => {
   try {
-    const { min = 0, max = 1e12, marca } = req.query;
-    const cond = { price: { $gte: Number(min), $lte: Number(max) } };
+    const { min = 0, max = 1e12, name } = req.query;
+    const cond = {
+      price: { $gte: Number(min), $lte: Number(max) },
+      active: true,
+    };
 
-    if (marca)
-      cond.$or = [{ brand: { $eq: marca } }, { brand: { $ne: "" } }];
-
+    if (name) {
+      cond.name = { $regex: name, $options: "i" };
+    }
     const lista = await Product.find(cond);
     res.json({ success: true, data: lista });
   } catch (err) {
@@ -29,7 +33,7 @@ export const filtroProductos = async (req, res, next) => {
 // Top 10 productos por cantidad de reseñas
 export const topProductos = async (req, res, next) => {
   try {
-    const top = await Product.find()
+    const top = await Product.find({ active: true })
       .sort({ reviewsCount: -1 })
       .limit(10);
     res.json({ success: true, data: top });
@@ -67,7 +71,9 @@ export const actualizarProducto = async (req, res, next) => {
 export const eliminarProducto = async (req, res, next) => {
   try {
     const { id } = req.params;
-    await Product.findByIdAndDelete(id);
+    await Product.findByIdAndUpdate(id, { active: false });
+    let reviews = await Review.find({ product: id });
+    await Review.deleteMany(reviews);
     res.json({ success: true, message: "Producto eliminado" });
   } catch (err) {
     next(err);

@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { requireAuth } from "../middlewares/auth.js";
+import { isOwnerOrAdmin, requireAuth } from "../middlewares/auth.js";
 import { obtenerCarrito, totalCarrito, agregarAlCarrito, quitarDelCarrito } from "../controllers/carrito.controller.js";
 
-const router = Router();
+const CarritoRouter = Router();
 
-router.get("/:usuarioId", requireAuth, obtenerCarrito);
-router.get("/:usuarioId/total", requireAuth, totalCarrito);
-router.post("/:usuarioId/add", requireAuth, agregarAlCarrito);
-router.post("/:usuarioId/remove", requireAuth, quitarDelCarrito);
+CarritoRouter.get("/:usuarioId", requireAuth,isOwnerOrAdmin, obtenerCarrito);
+CarritoRouter.get("/:usuarioId/total", requireAuth,isOwnerOrAdmin, totalCarrito);
+CarritoRouter.post("/:usuarioId/add", requireAuth,isOwnerOrAdmin, agregarAlCarrito);
+CarritoRouter.delete("/:usuarioId/remove/:cartItemId", requireAuth,isOwnerOrAdmin, quitarDelCarrito);
 
-export default router;
+export default CarritoRouter;

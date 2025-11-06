@@ -5,17 +5,13 @@ import Product from "../models/Product.js";
 export const obtenerCarrito = async (req, res, next) => {
   try {
     const { usuarioId } = req.params;
-    const esAdmin = req.user?.role === "admin";
-    const esDuenio = req.user?.id === usuarioId;
-    if (!esAdmin && !esDuenio)
-      return res.status(403).json({ success: false, error: "No autorizado" });
 
-    const cart = await Cart.findOne({ usuario: usuarioId })
+    const cart = await Cart.findOne({ user: usuarioId })
       .populate("items.product", "name price");
 
     res.json({
       success: true,
-      data: cart || { usuario: usuarioId, items: [] },
+      data: cart || { user: usuarioId, items: [] },
     });
   } catch (err) {
     next(err);
@@ -26,12 +22,9 @@ export const obtenerCarrito = async (req, res, next) => {
 export const totalCarrito = async (req, res, next) => {
   try {
     const { usuarioId } = req.params;
-    const esAdmin = req.user?.role === "admin";
-    const esDuenio = req.user?.id === usuarioId;
-    if (!esAdmin && !esDuenio)
-      return res.status(403).json({ success: false, error: "No autorizado" });
+    
 
-    const cart = await Cart.findOne({ usuario: usuarioId });
+    const cart = await Cart.findOne({ user: usuarioId });
     if (!cart)
       return res.json({ success: true, data: { total: 0, items: 0 } });
 
@@ -50,11 +43,6 @@ export const agregarAlCarrito = async (req, res, next) => {
     const { usuarioId } = req.params;
     const { productId, quantity } = req.body;
 
-    const esAdmin = req.user?.role === "admin";
-    const esDuenio = req.user?.id === usuarioId;
-    if (!esAdmin && !esDuenio)
-      return res.status(403).json({ success: false, error: "No autorizado" });
-
     const producto = await Product.findById(productId);
     if (!producto)
       return res
@@ -64,7 +52,7 @@ export const agregarAlCarrito = async (req, res, next) => {
     const subtotal = producto.price * quantity;
 
     const actualizado = await Cart.findOneAndUpdate(
-      { usuario: usuarioId },
+      { user: usuarioId },
       { $push: { items: { product: productId, quantity, subtotal } } },
       { new: true, upsert: true }
     );
@@ -78,17 +66,11 @@ export const agregarAlCarrito = async (req, res, next) => {
 // Quitar producto del carrito
 export const quitarDelCarrito = async (req, res, next) => {
   try {
-    const { usuarioId } = req.params;
-    const { productId } = req.body;
-
-    const esAdmin = req.user?.role === "admin";
-    const esDuenio = req.user?.id === usuarioId;
-    if (!esAdmin && !esDuenio)
-      return res.status(403).json({ success: false, error: "No autorizado" });
+    const { usuarioId,cartItemId } = req.params;
 
     const actualizado = await Cart.findOneAndUpdate(
-      { usuario: usuarioId },
-      { $pull: { items: { product: productId } } },
+      { user: usuarioId },
+      { $pull: { items: { _id: cartItemId } } },
       { new: true }
     );
 

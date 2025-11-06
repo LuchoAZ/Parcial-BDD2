@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { requireAuth } from "../middlewares/auth.js";
-import { listarResenas, resenasPorProducto, topResenas, crearResena } from "../controllers/resenas.controller.js";
+import { listarResenas, resenasPorProducto, topResenas, crearResena, eliminarResena } from "../controllers/resenas.controller.js";
 
-const router = Router();
+const ResenasRouter = Router();
 
-router.get("/", listarResenas);
-router.get("/product/:productId", resenasPorProducto);
-router.get("/top", topResenas);
-router.post("/", requireAuth, crearResena);
+ResenasRouter.get("/", listarResenas);
+ResenasRouter.get("/product/:productId", resenasPorProducto);
+ResenasRouter.get("/top", topResenas);
+ResenasRouter.post("/", requireAuth, crearResena);
+ResenasRouter.delete("/:id", requireAuth, eliminarResena);
 
-export default router;
+export default ResenasRouter;

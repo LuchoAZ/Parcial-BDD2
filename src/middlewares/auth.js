@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-export const verifyToken = (req, res, next) => {
+export const requireAuth = (req, res, next) => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(" ")[1];
   if (!token) return res.status(401).json({ error: "El token es obligatorio" });
@@ -17,4 +17,16 @@ export const isAdmin = (req, res, next) => {
     return res.status(403).json({ error: "Acceso denegado, solo administradores" });
   }
   next();
+};
+
+export const isOwnerOrAdmin = (req, res, next) => {
+  const { usuarioId } = req.params;
+  if (req.user.role !== "admin" && usuarioId != req.user.id) {
+    return res.status(403).json({ error: "Acceso denegado." });
+  }
+  next();
+};
+
+export const isOwnerOrAdminHelper = (user,userId) => {
+  return user.role == "admin" || userId == user.id
 };

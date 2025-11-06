@@ -1,15 +1,15 @@
 import { Router } from "express";
-import { requireAuth, requireRole } from "../middlewares/auth.js";
+import { requireAuth, isAdmin } from "../middlewares/auth.js";
 import { listarProductos, filtroProductos, topProductos, crearProducto, actualizarProducto, eliminarProducto, actualizarStock } from "../controllers/productos.controller.js";
 
-const router = Router();
+const ProductosRouter = Router();
 
-router.get("/", listarProductos);
-router.get("/filtro", filtroProductos);
-router.get("/top", topProductos);
-router.post("/", requireAuth, requireRole("admin"), crearProducto);
-router.put("/:id", requireAuth, requireRole("admin"), actualizarProducto);
-router.delete("/:id", requireAuth, requireRole("admin"), eliminarProducto);
-router.patch("/:id/stock", requireAuth, requireRole("admin"), actualizarStock);
+ProductosRouter.get("/", listarProductos);
+ProductosRouter.get("/filtro", filtroProductos);
+ProductosRouter.get("/top", topProductos);
+ProductosRouter.post("/", requireAuth, isAdmin, crearProducto);
+ProductosRouter.put("/:id", requireAuth, isAdmin, actualizarProducto);
+ProductosRouter.delete("/:id", requireAuth, isAdmin, eliminarProducto);
+ProductosRouter.patch("/:id/stock", requireAuth, isAdmin, actualizarStock);
 
-export default router;
+export default ProductosRouter;

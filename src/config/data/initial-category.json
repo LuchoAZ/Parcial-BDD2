@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Casual Wear",
+    "description": "Comfortable everyday clothing suitable for informal occasions"
+  },
+  {
+    "name": "Sportswear",
+    "description": "Athletic clothing designed for sports and exercise activities"
+  },
+  {
+    "name": "Formal Wear",
+    "description": "Elegant clothing suitable for formal events and business settings"
+  },
+  {
+    "name": "Outerwear",
+    "description": "Clothing designed to be worn outdoors and protect from weather"
+  },
+  {
+    "name": "Accessories",
+    "description": "Fashion items that complement and enhance clothing outfits"
+  }
+]
