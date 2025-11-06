@@ -41,7 +41,6 @@ export const eliminarCategoria = async (req, res, next) => {
   try {
     const { id } = req.params;
     let foundProducts = await Product.find({ category: id });
-    console.log(foundProducts.length);
     if (foundProducts.length) {
       res.json({
         success: false,

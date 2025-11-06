@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { requireAuth } from "../middlewares/auth.js";
+import { isAdmin, requireAuth } from "../middlewares/auth.js";
 import { listarResenas, resenasPorProducto, topResenas, crearResena, eliminarResena } from "../controllers/resenas.controller.js";
 
 const ResenasRouter = Router();
 
-ResenasRouter.get("/", listarResenas);
+ResenasRouter.get("/",requireAuth,isAdmin, listarResenas);
 ResenasRouter.get("/product/:productId", resenasPorProducto);
-ResenasRouter.get("/top", topResenas);
+ResenasRouter.get("/top",requireAuth,isAdmin, topResenas);
 ResenasRouter.post("/", requireAuth, crearResena);
 ResenasRouter.delete("/:id", requireAuth, eliminarResena);
 
